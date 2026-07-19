@@ -10,10 +10,10 @@
   <main>
     <section class="origin"><span>📍</span><div><b>ドルフィン鍼灸院から帰る</b><small>東京都葛飾区奥戸3丁目25−14</small></div></section>
     <section class="map-panel">
-      <div class="heading"><div><em>迷わない徒歩案内</em><h1>バス停までの道順</h1><p>停留所を選ぶと、建物名が載った徒歩ルート地図に切り替わります。</p></div><i>🚶 鍼灸院から徒歩</i></div>
+      <div class="heading"><div><em>迷わない徒歩案内</em><h1>バス停までの道順</h1><p>停留所を選ぶと、目印入りの道順画像に切り替わります。分かりにくい時はGoogleマップを開けます。</p></div><i>🚶 鍼灸院から徒歩</i></div>
       <div class="map-tabs" id="mapTabs"></div>
       <div class="map-grid">
-        <div class="map"><iframe id="map" title="バス停までの徒歩地図" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+        <div class="map"><img id="routeImage" alt="バス停までの道順画像"><span class="image-note">目印を簡略化した案内図</span></div>
         <aside><span class="selected-label">選択中</span><h2 id="mapTitle"></h2><p id="mapNote"></p><div class="landmarks" id="landmarks"></div><a id="googleRoute" class="btn primary" target="_blank" rel="noreferrer">Googleマップで道順を見る ↗</a><a id="currentRoute" class="btn secondary" target="_blank" rel="noreferrer">現在地から案内を開始</a><small>Googleマップで建物名、曲がり角、現在位置を拡大して確認できます。</small></aside>
       </div>
     </section>
