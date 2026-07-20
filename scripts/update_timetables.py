@@ -161,6 +161,7 @@ def build_data() -> dict:
     if failures:
         print("取得失敗ページ:")
         print("\n".join(failures))
+        raise RuntimeError(f"取得失敗ページ数: {len(failures)}")
     return {"updatedAt": datetime.now(timezone.utc).isoformat(), "source": "駅探掲載時刻表（dw曜日別取得）", "routes": routes}
 
 
@@ -182,6 +183,9 @@ def main() -> None:
     print(f"路線数: {len(data['routes'])}")
     print(f"停留所数: {len({r['stop'] for r in data['routes']})}")
     print("曜日別便数: " + ", ".join(f"{day}={count}" for day, count in totals.items()))
+    if previous:
+        old_totals = {day: sum(len(route.get("times", {}).get(day, [])) for route in previous.get("routes", [])) for day in REQUIRED_DAYS}
+        print("前回との差分: " + ", ".join(f"{day}={totals[day] - old_totals[day]:+d}" for day in REQUIRED_DAYS))
 
 
 if __name__ == "__main__":
