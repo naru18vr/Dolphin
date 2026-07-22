@@ -16,7 +16,7 @@
   function serviceDayInfo(value = new Date()) {
     const { key, weekday, year } = tokyoParts(value);
     if (!COVERED_YEARS.includes(year)) {
-      return { serviceDay: null, warning: `祝日データは${COVERED_YEARS[0]}〜${COVERED_YEARS.at(-1)}年分です。公式時刻表をご確認ください。` };
+      return { serviceDay: null, warning: `祝日データは${COVERED_YEARS[0]}〜${COVERED_YEARS[COVERED_YEARS.length - 1]}年分です。公式時刻表をご確認ください。` };
     }
     if (HOLIDAYS.has(key) || weekday === "Sun") return { serviceDay: "休日" };
     if (weekday === "Sat") return { serviceDay: "土曜" };
