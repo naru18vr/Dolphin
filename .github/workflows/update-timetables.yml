@@ -1,1 +1,17 @@
-name: Update bus timetables\non:\n  push:\n    branches: [main]\n    paths:\n      - scripts/update_timetables.py\n      - tests/**\n      - .github/workflows/update-timetables.yml\n  schedule:\n    - cron: "17 18 * * *"\n  workflow_dispatch:\npermissions:\n  contents: write\nconcurrency:\n  group: timetable-refresh\n  cancel-in-progress: false\njobs:\n  update:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Run parser tests\n        run: python3 -m unittest discover -s tests -v\n      - name: Download all weekday types\n        run: python3 scripts/update_timetables.py\n      - name: Save validated timetable cache\n        run: |\n          git config user.name "github-actions[bot]"\n          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"\n          git add data/timetables.json\n          git diff --cached --quiet || git commit -m "Update bus timetables"\n          git push\n
+name: Validate Dolphin
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Japanese holiday classification
+        run: node --test tests/holiday.test.mjs
+      - name: Check timetable data policy
+        run: python3 scripts/validate_timetables.py
