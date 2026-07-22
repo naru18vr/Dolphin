@@ -1,6 +1,8 @@
 {
-  "updatedAt": "2026-07-22T00:00:00+09:00",
-  "mode": "official-links-only",
-  "source": "時刻データは保存・再配布せず、京成バス公式時刻表へのリンクを案内します。",
+  "mode": "manual-verified",
+  "dataStatus": "awaiting-verification",
+  "updatedAt": null,
+  "verifiedBy": null,
+  "source": "京成バス公式時刻表を管理者が手動確認してから登録します。未確認の時刻は表示しません。",
   "routes": []
 }
