@@ -3,24 +3,24 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#1769d2"><meta name="description" content="ドルフィン鍼灸院から帰るためのバス・徒歩案内">
-  <title>ドルフィン帰宅バス</title><link rel="stylesheet" href="styles.css?v=20260722-safe">
+  <title>ドルフィン帰宅バス</title><link rel="stylesheet" href="styles.css?v=20260722-timetable"><link rel="stylesheet" href="timetable.css?v=20260722-timetable">
 </head>
 <body>
-  <header><div class="brand">🐬 <span>ドルフィン帰宅バス</span></div><div id="now">現在 --:--</div></header>
+  <header><div class="brand">🐬 <span>ドルフィン帰宅バス</span></div><div id="now">現在 --:--（日本時間）</div></header>
   <main>
     <section class="origin"><span>📍</span><div><b>ドルフィン鍼灸院から帰る</b><small>東京都葛飾区奥戸3丁目25−14</small></div></section>
     <section class="map-panel">
       <div class="heading"><div><em>迷わない徒歩案内</em><h1>バス停までの道順</h1><p>停留所を選ぶと、院から停留所までの徒歩ルート線と2つのピンが切り替わります。</p></div><i>🚶 鍼灸院から徒歩</i></div>
       <div class="map-tabs" id="mapTabs"></div>
       <div class="map-grid">
-        <div class="map"><iframe id="map" title="Googleマップの徒歩ルート" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><span class="image-note">奥戸周辺の詳細地図（OpenStreetMap）</span></div>
+        <div class="map"><iframe id="map" title="ドルフィン鍼灸院からバス停までの徒歩ルート地図" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><span class="image-note">奥戸周辺の詳細地図（OpenStreetMap）</span></div>
         <aside><span class="selected-label">選択中</span><h2 id="mapTitle"></h2><p id="mapNote"></p><div class="landmarks" id="landmarks"></div><a id="googleRoute" class="btn primary" target="_blank" rel="noreferrer">Googleマップで道順を見る ↗</a><a id="currentRoute" class="btn secondary" target="_blank" rel="noreferrer">現在地から案内を開始</a><small>Googleマップで建物名、曲がり角、現在位置を拡大して確認できます。</small></aside>
       </div>
     </section>
     <div class="columns">
-      <section class="panel controls"><h2>⌖ 行き先を選ぶ</h2><div class="destinations" id="destinations"></div><button id="one" class="search primary">🚌 <span id="oneLabel">金町駅だけ見る</span> ›</button><button id="all" class="search secondary">☷ 全部まとめて早い順 ›</button><p>金町駅行きが少ない時は、ほかの駅もまとめて比較できます。</p><div class="walks"><b>停留所までの徒歩目安</b><div id="walks"></div></div></section>
-      <section class="panel results"><div class="results-head"><h2>🚌 <span id="resultTitle">早く着くバス</span></h2><span id="resultTime">--:--</span></div><p>公式時刻表を開いて、最新の出発時刻・行き先・のりばを確認します</p><div id="results"></div><div class="notice">ⓘ <span><b>アプリ内に第三者の時刻表データは保存していません。</b><br>京成バス公式ページで、当日の時刻・行き先・のりばを確認してください。</span></div></section>
+      <section class="panel controls"><h2>⌖ 行き先を選ぶ</h2><div class="destinations" id="destinations"></div><button id="one" class="search primary">🚌 <span id="oneLabel">金町駅だけ見る</span> ›</button><button id="all" class="search secondary">☷ 全部まとめて早い順 ›</button><p>金町駅行きが少ない時は、ほかの駅も含めて概算到着順に比較できます。</p><div class="walks"><b>停留所までの徒歩目安</b><div id="walks"></div></div></section>
+      <section class="panel results"><div class="results-head"><h2>🚌 <span id="resultTitle">全部まとめて早く着く順</span></h2><span id="resultTime">--</span></div><p>通常ダイヤの時刻表をもとに、徒歩時間と余裕を含めて比較します。</p><div id="results"></div><div class="notice">ⓘ <span><b>時刻表をもとにした目安です。</b><br>遅延・運休・臨時変更・道路状況は反映されません。乗車前に京成バス公式時刻表をご確認ください。</span></div></section>
     </div>
   </main>
-  <script src="holiday.js?v=20260722-safe"></script><script src="app.js?v=20260722-safe"></script>
+  <script src="holiday.js?v=20260722-timetable"></script><script src="timetable.js?v=20260722-timetable"></script><script src="app.js?v=20260722-timetable"></script>
 </body></html>
