@@ -56,9 +56,13 @@ test("発車時刻と現在時刻が同じ便は候補にしない", () => {
 
 test("時刻表の異常を黙って通さない", () => {
   const brokenTime = validRoute({ times: { 平日: ["1460"], 土曜: ["1433"], 休日: ["1433"] } });
-  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [brokenTime] }), /不正な時刻/);
+  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", dataStatus: "verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [brokenTime] }), /不正な時刻/);
   const missingDay = validRoute({ times: { 平日: ["1433"], 土曜: ["1433"] } });
-  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [missingDay] }), /休日データ/);
+  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", dataStatus: "verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [missingDay] }), /休日データ/);
   const duplicate = validRoute({ times: { 平日: ["1433", "1433"], 土曜: ["1433"], 休日: ["1433"] } });
-  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [duplicate] }), /昇順または一意/);
+  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", dataStatus: "verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [duplicate] }), /昇順または一意/);
+  const negativeDuration = validRoute({ durationMinutes: -1, times: { 平日: ["1433"], 土曜: ["1434"], 休日: ["1435"] } });
+  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", dataStatus: "verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [negativeDuration] }), /バス所要時間/);
+  const route = validRoute({ times: { 平日: ["1433"], 土曜: ["1434"], 休日: ["1435"] } });
+  assert.throws(() => T.validateTimetableData({ mode: "manual-verified", dataStatus: "verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [route, { ...route }] }), /路線が重複/);
 });
