@@ -1,17 +1,24 @@
-name: Validate Dolphin
+name: Validate Dolphin timetable data
+
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check Japanese holiday classification
-        run: node --test tests/holiday.test.mjs
-      - name: Check timetable data policy
-        run: python3 scripts/validate_timetables.py
+        with:
+          fetch-depth: 2
+      - name: Test Japan holiday and timetable calculations
+        run: node --test tests/*.test.mjs
+      - name: Validate timetable data structure
+        run: node scripts/validate_timetables.mjs
+      - name: Report and check change from previous timetable data
+        run: node scripts/report_timetable_diff.mjs
