@@ -99,8 +99,10 @@
     if (!data || typeof data !== "object" || !Array.isArray(data.routes)) throw new Error("時刻表JSONの routes が不正です");
     if (data.mode !== "manual-verified") throw new Error("時刻表データの運用モードが不正です");
     const waiting = data.dataStatus === "awaiting-verification";
+    if (!waiting && data.dataStatus !== "verified") throw new Error("時刻表データの確認状態が不正です");
     if (waiting && data.routes.length) throw new Error("確認待ちデータに路線を入れることはできません");
     if (!waiting && !data.updatedAt) throw new Error("確認済み時刻表には更新日が必要です");
+    if (!waiting && Number.isNaN(new Date(data.updatedAt).getTime())) throw new Error("時刻表データの更新日が不正です");
     const routeKeys = new Set();
     for (const route of data.routes) {
       validateRoute(route);
