@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 
 const context = { Intl, globalThis: {} };
 vm.runInNewContext(readFileSync(new URL("../holiday.js", import.meta.url), "utf8"), context);
-const { serviceDay } = context.globalThis.DolphinHoliday;
+const { serviceDay, serviceDayInfo } = context.globalThis.DolphinHoliday;
 
 test("日本時間の通常平日・土曜・日曜を区分する", () => {
   assert.equal(serviceDay(new Date("2026-07-21T12:00:00+09:00")), "平日");
@@ -21,4 +21,10 @@ test("祝日・振替休日・国民の休日を休日にする", () => {
 
 test("UTC日付境界でも日本時間で判定する", () => {
   assert.equal(serviceDay(new Date("2026-07-20T15:30:00Z")), "平日");
+});
+
+test("収録年の外では平日扱いにせず警告する", () => {
+  const result = serviceDayInfo(new Date("2028-07-24T12:00:00+09:00"));
+  assert.equal(result.serviceDay, null);
+  assert.match(result.warning, /祝日データ/);
 });
