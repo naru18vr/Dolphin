@@ -79,3 +79,14 @@ node scripts/validate_timetables.mjs
 テストは、残り時間、徒歩時間と2分余裕の境界、日付またぎ、24時台、概算到着順、最終便後、祝日、データ形式を確認します。祝日データは内閣府公表の2026・2027年分を収録し、対象年外では平日扱いにせず公式確認を促します。
 
 公開ページの確認時刻は、URLへ `?now=2026-07-23T14:25:00%2B09:00` を付けると固定できます。画面上では「テスト時刻」と表示されるため、実際の現在時刻と混同しません。
+
+### 公式PDFとの再照合
+
+PDFを再確認する際は、文字列を上から順に読むのではなく、PDF上で同じ横行にある「時」と曜日列の「分」を座標で結合します。これにより、行末の分が次の時刻へずれる誤登録を防ぎます。
+
+```sh
+python scripts/verify_official_pdfs.py --check /path/to/official-pdfs data/timetables.json /tmp/timetables-from-pdf.json
+node --test tests/pdf-reconciliation.test.mjs
+```
+
+`--check` は、全14方向・全曜日のPDF再生成結果とJSONが一致しない場合に失敗します。`tests/fixtures/official-pdf-times.json` は、2026年7月23日付の添付公式PDFから座標読取りで作成した全時刻の照合fixtureです。
