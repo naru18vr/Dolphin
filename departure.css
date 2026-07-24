@@ -1,0 +1,4 @@
+.trip-time{display:flex;align-items:flex-end;column-gap:12px;row-gap:7px;flex-wrap:wrap}
+.trip-time .departure-time{display:flex;flex-direction:column;flex:0 0 auto}
+.trip-time .countdown{margin:0 8px 2px 2px;padding:6px 10px;font-size:18px;line-height:1.15;letter-spacing:.02em;box-shadow:0 1px 0 #d8b767}
+@media(max-width:580px){.trip-time{column-gap:10px;row-gap:6px}.trip-time .countdown{margin:0 5px 2px 0;padding:6px 9px;font-size:18px}.trip-time i{margin:0 1px}.trip-time span,.trip-time strong{font-size:23px}}
