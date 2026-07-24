@@ -7,6 +7,7 @@ const html = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
 test("便カードは残り時間・正式行き先・概算所要時間の注記を表示する", () => {
   assert.match(app, /class="countdown"/);
+  assert.match(app, /class="departure-time"/);
   assert.match(app, /正式行き先：/);
   assert.match(app, /durationBasis/);
   assert.match(app, /道路状況により変動/);
