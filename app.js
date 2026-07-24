@@ -51,6 +51,10 @@ function drawControls() {
   $("destinations").innerHTML = destinations.map((destination) => `<button class="destination ${destination === selected ? "active" : ""}" data-d="${destination}" aria-pressed="${destination === selected}">${destination === selected ? "✓ " : ""}${destination}</button>`).join("");
   document.querySelectorAll("[data-d]").forEach((button) => { button.onclick = () => { selected = button.dataset.d; mode = "one"; drawControls(); drawResults(); }; });
   $("oneLabel").textContent = `${selected}だけ見る`;
+  $("all").className = `search ${mode === "all" ? "primary" : "secondary"}`;
+  $("one").className = `search ${mode === "one" ? "primary" : "secondary"}`;
+  $("all").setAttribute("aria-pressed", String(mode === "all"));
+  $("one").setAttribute("aria-pressed", String(mode === "one"));
   $("walks").innerHTML = Object.entries(stops).map(([name, stop]) => `<div class="walk">🚶 ${name}<strong>${stop.walk}分</strong></div>`).join("");
 }
 
@@ -93,7 +97,8 @@ function drawResults() {
   }
   const { trips } = globalThis.DolphinTimetable.getBoardableTrips(timetableData.routes, mode === "one" ? selected : null, now);
   if (!trips.length) {
-    $("results").innerHTML = `<div class="data-warning"><b>本日の乗車可能な便は終了しました。</b><br>翌日の時刻表は京成バス公式ページでご確認ください。</div>${officialCards(stopNames, mode === "one" ? selected : "")}`;
+    $("results").innerHTML = `<div class="data-warning"><b>本日の乗車可能な便は終了しました。</b><br>翌日の時刻表は京成バス公式ページでご確認ください。</div>${mode === "one" ? `<button id="compareAllFromEmpty" class="search primary compare-cta">☷ ほかの行き先も全部まとめて比較する ›</button>` : ""}${officialCards(stopNames, mode === "one" ? selected : "")}`;
+    $("compareAllFromEmpty")?.addEventListener("click", () => { mode = "all"; drawControls(); drawResults(); });
     return;
   }
   $("results").innerHTML = `<div class="data-updated">時刻表データ更新：${escapeHtml(String(timetableData.updatedAt).slice(0, 10))}</div>${trips.slice(0, 5).map((trip, index) => tripCard(trip, index, now)).join("")}`;
