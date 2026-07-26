@@ -9,6 +9,10 @@
   <header><div class="brand">🐬 <span>ドルフィン帰宅バス</span></div><div id="now">現在 --:--（日本時間）</div></header>
   <main>
     <section class="origin"><span>📍</span><div><b>ドルフィン鍼灸院から帰る</b><small>東京都葛飾区奥戸3丁目25−14</small></div></section>
+    <div class="columns">
+      <section class="panel controls"><h2>⌖ 行き先を選ぶ</h2><div class="destinations" id="destinations"></div><button id="all" class="search primary" aria-pressed="true">☷ 全部まとめて早い順（おすすめ）›</button><button id="one" class="search secondary" aria-pressed="false">🚌 <span id="oneLabel">金町駅だけ見る</span> ›</button><p>金町駅行きが少ない時は、ほかの駅も含めて概算到着順に比較できます。</p><div class="walks"><b>停留所までの徒歩目安</b><div id="walks"></div></div></section>
+      <section class="panel results"><div class="results-head"><h2>🚌 <span id="resultTitle">全部まとめて早く着く順</span></h2><span id="resultTime">--</span></div><p>京成バス公式時刻表をもとに、徒歩時間と余裕を含めて比較します。</p><div id="results"></div><div class="notice">ⓘ <span><b>時刻表をもとにした目安です。</b><br>遅延・運休・臨時変更・道路状況は反映されません。乗車前に京成バス公式時刻表をご確認ください。</span></div></section>
+    </div>
     <section class="map-panel">
       <div class="heading"><div><em>迷わない徒歩案内</em><h1>バス停までの道順</h1><p>停留所を選ぶと、院から停留所までの徒歩ルート線と2つのピンが切り替わります。</p></div><i>🚶 鍼灸院から徒歩</i></div>
       <div class="map-tabs" id="mapTabs"></div>
@@ -17,10 +21,6 @@
         <aside><span class="selected-label">選択中</span><h2 id="mapTitle"></h2><p id="mapNote"></p><div class="landmarks" id="landmarks"></div><a id="googleRoute" class="btn primary" target="_blank" rel="noreferrer">Googleマップで道順を見る ↗</a><a id="currentRoute" class="btn secondary" target="_blank" rel="noreferrer">現在地から案内を開始</a><small>Googleマップで建物名、曲がり角、現在位置を拡大して確認できます。</small></aside>
       </div>
     </section>
-    <div class="columns">
-      <section class="panel controls"><h2>⌖ 行き先を選ぶ</h2><div class="destinations" id="destinations"></div><button id="all" class="search primary" aria-pressed="true">☷ 全部まとめて早い順（おすすめ）›</button><button id="one" class="search secondary" aria-pressed="false">🚌 <span id="oneLabel">金町駅だけ見る</span> ›</button><p>金町駅行きが少ない時は、ほかの駅も含めて概算到着順に比較できます。</p><div class="walks"><b>停留所までの徒歩目安</b><div id="walks"></div></div></section>
-      <section class="panel results"><div class="results-head"><h2>🚌 <span id="resultTitle">全部まとめて早く着く順</span></h2><span id="resultTime">--</span></div><p>京成バス公式時刻表をもとに、徒歩時間と余裕を含めて比較します。</p><div id="results"></div><div class="notice">ⓘ <span><b>時刻表をもとにした目安です。</b><br>遅延・運休・臨時変更・道路状況は反映されません。乗車前に京成バス公式時刻表をご確認ください。</span></div></section>
-    </div>
   </main>
   <script src="holiday.js?v=20260724-ui"></script><script src="timetable.js?v=20260724-ui"></script><script src="app.js?v=20260724-ui"></script>
 </body></html>
