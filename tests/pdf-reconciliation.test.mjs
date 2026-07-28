@@ -8,7 +8,7 @@ const keyFor = (route) => [route.stop, route.line, route.direction].join("|");
 const route = (stop, line, direction) => data.routes.find((item) => item.stop === stop && item.line === line && item.direction === direction);
 
 test("全14方向の全時刻は、公式PDFを座標で読み取った照合fixtureと完全一致する", () => {
-  const actual = Object.fromEntries(data.routes.map((item) => [keyFor(item), item.times]));
+  const actual = Object.fromEntries(data.routes.filter((item) => item.times).map((item) => [keyFor(item), item.times]));
   assert.deepEqual(actual, expected);
 });
 
@@ -26,3 +26,13 @@ test("奥戸三丁目 新小58 新小岩駅行の土休日は20・21時だけを
   assert.deepEqual(times, route("奥戸三丁目", "新小58", "新小岩駅行").times.休日);
 });
 
+
+
+test("新小53亀有駅行は通常便と区役所経由の公式PDFを共通参照として統合する", () => {
+  const shared = data.sharedTimetables["okudo3-kameari-shinko53-kameari"];
+  assert.ok(shared);
+  assert.deepEqual(shared.times.平日.slice(0, 9), ["0637", "0658", "0713", "0728", "0743", "0801", "0819", "0838", "0853"]);
+  assert.deepEqual(shared.times.平日.slice(-8), ["2003", "2023", "2043", "2103", "2118", "2138", "2204"]);
+  assert.equal(shared.times.平日.includes("0808"), false);
+  assert.deepEqual(shared.times.土曜, shared.times.休日);
+});
