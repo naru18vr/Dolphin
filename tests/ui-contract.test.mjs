@@ -40,4 +40,5 @@ test("スマホでは行き先選択を最上部に置き、途中降車停留�
   assert.match(css, /\.controls\{order:1\}/);
   assert.match(css, /\.origin\{order:2\}/);
   assert.match(css, /\.results\{order:3\}/);
+  assert.doesNotMatch(css, /\.columns\{display:flex;flex-direction:column;order:2\}/);
 });
