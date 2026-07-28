@@ -78,12 +78,14 @@ function dataMessage(now) {
 function tripCard(trip, index, now) {
   const { route, departure, arrival, countdownMinutes } = trip;
   const title = index === 0 ? "最も早く着く候補" : index === 1 ? "ほかの候補" : `その次の候補 ${index + 1}`;
-  const directions = [route.destinationLabel, route.line && `系統 ${route.line}`, route.direction && `方向 ${route.direction}`].filter(Boolean).join("・");
   const durationNote = route.durationBasis || "通常時の概算です。道路状況により変動します。";
   const stationWalkMinutes = route.stationWalkMinutes ?? route.dropOffWalkMinutes ?? 0;
-  const dropOff = route.dropOffStop ? `<br>降車：${escapeHtml(route.dropOffStop)}${stationWalkMinutes ? `（駅まで徒歩約${stationWalkMinutes}分）` : ""}` : "";
+  const displayDestination = route.dropOffStop || route.destination;
+  const directionDetail = route.dropOffStop
+    ? `バス行き先：${escapeHtml(route.direction || route.destinationLabel)} · 系統 ${escapeHtml(route.line)}<br>降車停留所：${escapeHtml(route.dropOffStop)}`
+    : `正式行き先：${escapeHtml(route.destinationLabel)} · 系統 ${escapeHtml(route.line)}`;
   const durationText = route.busDurationMinutes && stationWalkMinutes ? `バス約${route.busDurationMinutes}分 + 降車後 徒歩約${stationWalkMinutes}分（合計約${route.durationMinutes}分）` : `バス所要時間 約${route.durationMinutes}分`;
-  return `<article class="bus ${index === 0 ? "best" : ""}"><div><span class="candidate-label">${title}</span><div class="bus-route">${escapeHtml(route.stop)}バス停 → ${escapeHtml(route.destination)}</div><div class="direction">目的地：${escapeHtml(route.destination)}<br>正式行き先：${escapeHtml(route.destinationLabel)} · 系統 ${escapeHtml(route.line)}${dropOff}</div><div class="trip-time"><div class="departure-time"><small>発車</small><span>${globalThis.DolphinTimetable.formatTime(departure, now)}発</span></div><b class="countdown">${globalThis.DolphinTimetable.formatCountdown(countdownMinutes)}</b><i>→</i><div><small>概算到着</small><strong>${globalThis.DolphinTimetable.formatTime(arrival, now)}ごろ</strong></div></div><div class="details">${durationText}<br>🚶 停留所まで徒歩約${route.walkMinutes}分（徒歩時間に${globalThis.DolphinTimetable.BOARDING_BUFFER_MINUTES}分の余裕を含めて検索）<br><small>${escapeHtml(durationNote)}</small></div></div><div class="trip-links"><a class="official" href="${escapeHtml(route.officialUrl)}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認 ↗</a><a class="map-link" href="${stopGoogleLink(route.stop)}" target="_blank" rel="noreferrer">Googleマップで停留所へ ↗</a></div></article>`;
+  return `<article class="bus ${index === 0 ? "best" : ""}"><div><span class="candidate-label">${title}</span><div class="bus-route">${escapeHtml(route.stop)}バス停 → ${escapeHtml(displayDestination)}</div><div class="direction">${directionDetail}</div><div class="trip-time"><div class="departure-time"><small>発車</small><span>${globalThis.DolphinTimetable.formatTime(departure, now)}発</span></div><b class="countdown">${globalThis.DolphinTimetable.formatCountdown(countdownMinutes)}</b><i>→</i><div><small>概算到着</small><strong>${globalThis.DolphinTimetable.formatTime(arrival, now)}ごろ</strong></div></div><div class="details">${durationText}<br>🚶 停留所まで徒歩約${route.walkMinutes}分（徒歩時間に${globalThis.DolphinTimetable.BOARDING_BUFFER_MINUTES}分の余裕を含めて検索）<br><small>${escapeHtml(durationNote)}</small></div></div><div class="trip-links"><a class="official" href="${escapeHtml(route.officialUrl)}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認 ↗</a><a class="map-link" href="${stopGoogleLink(route.stop)}" target="_blank" rel="noreferrer">Googleマップで停留所へ ↗</a></div></article>`;
 }
 
 function drawResults() {
