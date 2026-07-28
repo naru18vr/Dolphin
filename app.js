@@ -2,11 +2,12 @@ const originCoord = "35.732025,139.863983";
 const stops = {
   "五丁目住宅": { coord: "35.732030,139.864110", walk: 1, note: "院を出てすぐの最寄り停留所です。道路を渡る前に、行き先と停留所標識の方面を確認してください。", marks: ["鈴木接骨院・ドルフィンはりきゅう院", "五丁目住宅バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020473" },
   "奥戸3丁目": { coord: "35.735039,139.863480", walk: 5, note: "院から北へ進み、奥戸7丁目1の環七通り寄りにある停留所へ向かいます。", marks: ["ドルフィン鍼灸院", "奥戸三丁目児童遊園付近", "奥戸7丁目1・奥戸三丁目バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020384" },
+  "奥戸三丁目（亀有線）": { query: "奥戸三丁目（亀有線） バス停", walk: 5, note: "既存の奥戸三丁目とは別の、亀有線の停留所です。新小53・亀有駅行の標識を確認してください。", marks: ["ドルフィン鍼灸院", "奥戸三丁目（亀有線）バス停", "新小53・亀有駅行"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020300" },
   "奥戸6丁目": { coord: "35.731575,139.868098", walk: 6, note: "同名停留所が道路の両側にあるため、乗る駅方面を必ず確認してください。", marks: ["五丁目住宅バス停", "奥戸六丁目バス停", "北沼公園方面"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020360" }
 };
-const stopAliases = { "奥戸三丁目": "奥戸3丁目", "奥戸3丁目": "奥戸3丁目", "奥戸六丁目": "奥戸6丁目", "奥戸6丁目": "奥戸6丁目", "五丁目住宅": "五丁目住宅" };
+const stopAliases = { "奥戸三丁目": "奥戸3丁目", "奥戸3丁目": "奥戸3丁目", "奥戸三丁目（亀有線）": "奥戸三丁目（亀有線）", "奥戸六丁目": "奥戸6丁目", "奥戸6丁目": "奥戸6丁目", "五丁目住宅": "五丁目住宅" };
 const destinations = ["金町駅", "亀有駅", "青砥駅", "小岩駅", "京成小岩駅", "新小岩駅"];
-const routeStops = { "金町駅": ["奥戸3丁目", "奥戸6丁目"], "亀有駅": ["奥戸3丁目", "奥戸6丁目", "五丁目住宅"], "青砥駅": ["奥戸3丁目", "五丁目住宅"], "小岩駅": ["奥戸3丁目", "奥戸6丁目"], "京成小岩駅": ["奥戸6丁目"], "新小岩駅": ["奥戸3丁目", "奥戸6丁目", "五丁目住宅"] };
+const routeStops = { "金町駅": ["奥戸3丁目", "奥戸6丁目"], "亀有駅": ["奥戸3丁目", "奥戸6丁目", "五丁目住宅", "奥戸三丁目（亀有線）"], "青砥駅": ["奥戸3丁目", "五丁目住宅", "奥戸三丁目（亀有線）"], "小岩駅": ["奥戸3丁目", "奥戸6丁目"], "京成小岩駅": ["奥戸6丁目"], "新小岩駅": ["奥戸3丁目", "奥戸6丁目", "五丁目住宅"] };
 let selected = "金町駅";
 let mode = "all";
 let mapStop = "五丁目住宅";
@@ -26,7 +27,7 @@ function stopFor(name) {
 
 function stopGoogleLink(name) {
   const stop = stopFor(name);
-  return stop ? `https://www.google.com/maps/dir/?api=1&origin=${originCoord}&destination=${stop.coord}&travelmode=walking` : "https://www.google.com/maps";
+  return stop ? `https://www.google.com/maps/dir/?api=1&origin=${originCoord}&destination=${enc(stop.coord || stop.query)}&travelmode=walking` : "https://www.google.com/maps";
 }
 
 function appNow() {
@@ -42,8 +43,8 @@ function drawMap() {
   $("mapNote").textContent = stop.note;
   $("landmarks").innerHTML = `<b>地図で見る目印</b>${stop.marks.map((mark, index) => `<div class="landmark"><span>${index + 1}</span>${escapeHtml(mark)}</div>`).join("")}`;
   $("googleRoute").href = stopGoogleLink(mapStop);
-  $("currentRoute").href = `https://www.google.com/maps/dir/?api=1&destination=${stop.coord}&travelmode=walking`;
-  $("mapTabs").innerHTML = Object.entries(stops).map(([name, value]) => `<button class="map-tab ${name === mapStop ? "active" : ""}" data-stop="${name}" aria-pressed="${name === mapStop}"><span>${name}</span><b>約 ${value.walk}分</b></button>`).join("");
+  $("currentRoute").href = `https://www.google.com/maps/dir/?api=1&destination=${enc(stop.coord || stop.query)}&travelmode=walking`;
+  $("mapTabs").innerHTML = Object.entries(stops).filter(([, value]) => value.coord).map(([name, value]) => `<button class="map-tab ${name === mapStop ? "active" : ""}" data-stop="${name}" aria-pressed="${name === mapStop}"><span>${name}</span><b>約 ${value.walk}分</b></button>`).join("");
   document.querySelectorAll("[data-stop]").forEach((button) => { button.onclick = () => { mapStop = button.dataset.stop; drawMap(); }; });
 }
 
@@ -79,7 +80,9 @@ function tripCard(trip, index, now) {
   const title = index === 0 ? "最も早く着く候補" : index === 1 ? "ほかの候補" : `その次の候補 ${index + 1}`;
   const directions = [route.destinationLabel, route.line && `系統 ${route.line}`, route.direction && `方向 ${route.direction}`].filter(Boolean).join("・");
   const durationNote = route.durationBasis || "通常時の概算です。道路状況により変動します。";
-  return `<article class="bus ${index === 0 ? "best" : ""}"><div><span class="candidate-label">${title}</span><div class="bus-route">${escapeHtml(route.stop)}バス停 → ${escapeHtml(route.destination)}</div><div class="direction">目的地：${escapeHtml(route.destination)}<br>正式行き先：${escapeHtml(route.destinationLabel)} · 系統 ${escapeHtml(route.line)}</div><div class="trip-time"><div class="departure-time"><small>発車</small><span>${globalThis.DolphinTimetable.formatTime(departure, now)}発</span></div><b class="countdown">${globalThis.DolphinTimetable.formatCountdown(countdownMinutes)}</b><i>→</i><div><small>概算到着</small><strong>${globalThis.DolphinTimetable.formatTime(arrival, now)}ごろ</strong></div></div><div class="details">バス所要時間 約${route.durationMinutes}分<br>🚶 停留所まで徒歩約${route.walkMinutes}分（徒歩時間に${globalThis.DolphinTimetable.BOARDING_BUFFER_MINUTES}分の余裕を含めて検索）<br><small>${escapeHtml(durationNote)}</small></div></div><div class="trip-links"><a class="official" href="${escapeHtml(route.officialUrl)}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認 ↗</a><a class="map-link" href="${stopGoogleLink(route.stop)}" target="_blank" rel="noreferrer">Googleマップで停留所へ ↗</a></div></article>`;
+  const dropOff = route.dropOffStop ? `<br>降車：${escapeHtml(route.dropOffStop)}${route.dropOffWalkMinutes ? `（駅まで徒歩約${route.dropOffWalkMinutes}分）` : ""}` : "";
+  const durationText = route.busDurationMinutes && route.dropOffWalkMinutes ? `バス約${route.busDurationMinutes}分 + 降車後徒歩約${route.dropOffWalkMinutes}分（合計約${route.durationMinutes}分）` : `バス所要時間 約${route.durationMinutes}分`;
+  return `<article class="bus ${index === 0 ? "best" : ""}"><div><span class="candidate-label">${title}</span><div class="bus-route">${escapeHtml(route.stop)}バス停 → ${escapeHtml(route.destination)}</div><div class="direction">目的地：${escapeHtml(route.destination)}<br>正式行き先：${escapeHtml(route.destinationLabel)} · 系統 ${escapeHtml(route.line)}${dropOff}</div><div class="trip-time"><div class="departure-time"><small>発車</small><span>${globalThis.DolphinTimetable.formatTime(departure, now)}発</span></div><b class="countdown">${globalThis.DolphinTimetable.formatCountdown(countdownMinutes)}</b><i>→</i><div><small>概算到着</small><strong>${globalThis.DolphinTimetable.formatTime(arrival, now)}ごろ</strong></div></div><div class="details">${durationText}<br>🚶 停留所まで徒歩約${route.walkMinutes}分（徒歩時間に${globalThis.DolphinTimetable.BOARDING_BUFFER_MINUTES}分の余裕を含めて検索）<br><small>${escapeHtml(durationNote)}</small></div></div><div class="trip-links"><a class="official" href="${escapeHtml(route.officialUrl)}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認 ↗</a><a class="map-link" href="${stopGoogleLink(route.stop)}" target="_blank" rel="noreferrer">Googleマップで停留所へ ↗</a></div></article>`;
 }
 
 function drawResults() {
@@ -110,7 +113,7 @@ async function loadTimetables() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     globalThis.DolphinTimetable.validateTimetableData(data);
-    timetableData = data;
+    timetableData = { ...data, routes: globalThis.DolphinTimetable.resolveRoutes(data) };
   } catch (error) {
     timetableError = error instanceof Error ? error.message : "unknown error";
   }
