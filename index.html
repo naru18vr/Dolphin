@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#1769d2"><meta name="description" content="ドルフィン鍼灸院から帰るためのバス・徒歩案内">
-  <title>ドルフィン帰宅バス</title><link rel="stylesheet" href="styles.css?v=20260728-stop-labels"><link rel="stylesheet" href="timetable.css?v=20260728-stop-labels"><link rel="stylesheet" href="departure.css?v=20260724-spacing">
+  <title>ドルフィン帰宅バス</title><link rel="stylesheet" href="styles.css?v=20260728-route-maps"><link rel="stylesheet" href="timetable.css?v=20260728-route-maps"><link rel="stylesheet" href="departure.css?v=20260724-spacing">
 </head>
 <body>
   <header><div class="brand">🐬 <span>ドルフィン帰宅バス</span></div><div id="now">現在 --:--（日本時間）</div></header>
@@ -13,6 +13,18 @@
       <section class="panel controls"><h2>⌖ 行き先を選ぶ</h2><div class="destinations" id="destinations"></div><button id="all" class="search primary" aria-pressed="true">☷ 全部まとめて早い順（おすすめ）›</button><button id="one" class="search secondary" aria-pressed="false">🚌 <span id="oneLabel">金町駅だけ見る</span> ›</button><p>金町駅行きが少ない時は、ほかの駅も含めて概算到着順に比較できます。</p><div class="walks"><b>停留所までの徒歩目安</b><div id="walks"></div></div></section>
       <section class="panel results"><div class="results-head"><h2>🚌 <span id="resultTitle">全部まとめて早く着く順</span></h2><span id="resultTime">--</span></div><p>京成バス公式時刻表をもとに、徒歩時間と余裕を含めて比較します。</p><div id="results"></div><div class="notice">ⓘ <span><b>時刻表をもとにした目安です。</b><br>遅延・運休・臨時変更・道路状況は反映されません。乗車前に京成バス公式時刻表をご確認ください。</span></div></section>
     </div>
+    <section class="route-map-panel" aria-labelledby="route-map-title">
+      <div class="route-map-heading">
+        <div><em>乗る前に確認</em><h2 id="route-map-title">バス停の路線図・系統を確認</h2><p>各バス停の京成バス公式ページで、通る系統・行き先・のりばを確認できます。</p></div>
+        <span>🗺️ 公式情報</span>
+      </div>
+      <div class="route-map-links">
+        <a href="https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020473" target="_blank" rel="noreferrer"><b>五丁目住宅</b><small>系統・路線図を確認 ↗</small></a>
+        <a href="https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020384" target="_blank" rel="noreferrer"><b>奥戸三丁目</b><small>系統・路線図を確認 ↗</small></a>
+        <a href="https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020360" target="_blank" rel="noreferrer"><b>奥戸六丁目</b><small>系統・路線図を確認 ↗</small></a>
+        <a href="https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020300" target="_blank" rel="noreferrer"><b>奥戸三丁目（亀有線）</b><small>系統・路線図を確認 ↗</small></a>
+      </div>
+    </section>
     <section class="map-panel">
       <div class="heading"><div><em>迷わない徒歩案内</em><h1>バス停までの道順</h1><p>停留所を選ぶと、院から停留所までの徒歩ルート線と2つのピンが切り替わります。</p></div><i>🚶 鍼灸院から徒歩</i></div>
       <div class="map-tabs" id="mapTabs"></div>
@@ -22,5 +34,5 @@
       </div>
     </section>
   </main>
-  <script src="holiday.js?v=20260728-stop-labels"></script><script src="timetable.js?v=20260728-stop-labels"></script><script src="app.js?v=20260728-stop-labels"></script>
+  <script src="holiday.js?v=20260728-route-maps"></script><script src="timetable.js?v=20260728-route-maps"></script><script src="app.js?v=20260728-route-maps"></script>
 </body></html>
