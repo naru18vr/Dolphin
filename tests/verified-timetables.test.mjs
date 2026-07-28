@@ -10,11 +10,11 @@ const T = globalThis.DolphinTimetable;
 const data = JSON.parse(fs.readFileSync(new URL("../data/timetables.json", import.meta.url), "utf8"));
 const route = (stop, line, direction) => data.routes.find((item) => item.stop === stop && item.line === line && item.direction === direction);
 
-test("2026-07-23の公式PDF照合済みデータとして形式・対象範囲を満たす", () => {
+test("2026-07-28の公式PDF照合済みデータとして形式・対象範囲を満たす", () => {
   assert.equal(data.mode, "manual-verified");
   assert.equal(data.dataStatus, "verified");
-  assert.equal(data.updatedAt, "2026-07-23");
-  assert.equal(data.routes.length, 14);
+  assert.equal(data.updatedAt, "2026-07-28");
+  assert.equal(data.routes.length, 16);
   assert.equal(data.routes.some((item) => /京成小岩駅西/.test(`${item.destination}${item.destinationLabel}${item.direction}`)), false);
   assert.doesNotThrow(() => T.validateTimetableData(data));
 });
@@ -54,4 +54,23 @@ test("PDFの曜日区分を守り、五丁目住宅→亀有駅の照合注記�
   assert.deepEqual(kameari.times.土曜, kameari.times.休日);
   const newkane = route("奥戸六丁目", "新金02", "金町駅行");
   assert.deepEqual(newkane.times.土曜, newkane.times.休日);
+});
+
+
+test("新小53亀有駅行は共通時刻表を青砥駅・亀有駅で参照する", () => {
+  const ref = "okudo3-kameari-shinko53-kameari";
+  const shared = data.sharedTimetables[ref];
+  assert.ok(shared);
+  assert.equal(shared.times.平日.length, 60);
+  assert.equal(shared.times.土曜.length, 55);
+  assert.deepEqual(shared.times.土曜, shared.times.休日);
+  assert.deepEqual(shared.times.平日.slice(0, 5), ["0637", "0658", "0713", "0728", "0743"]);
+  assert.deepEqual(shared.times.平日.slice(-4), ["2103", "2118", "2138", "2204"]);
+  const aoto = data.routes.find((item) => item.stopId === "00020300" && item.destination === "青砥駅");
+  const kameari = data.routes.find((item) => item.stopId === "00020300" && item.destination === "亀有駅" && item.line === "新小53");
+  assert.equal(aoto.timesRef, ref);
+  assert.equal(kameari.timesRef, ref);
+  assert.equal(aoto.dropOffStop, "青砥駅入口");
+  assert.equal(aoto.dropOffWalkMinutes, 5);
+  assert.notEqual(aoto.durationMinutes, kameari.durationMinutes);
 });
