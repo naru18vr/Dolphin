@@ -95,6 +95,17 @@
     }
   }
 
+  function resolveRoutes(data) {
+    const sharedTimetables = data.sharedTimetables || {};
+    return data.routes.map((route) => {
+      if (route.times) return route;
+      if (!route.timesRef) return route;
+      const shared = sharedTimetables[route.timesRef];
+      if (!shared || !shared.times) throw new Error(`${route.stop || "路線"}: 共通時刻表 ${route.timesRef} がありません`);
+      return { ...route, times: shared.times };
+    });
+  }
+
   function validateTimetableData(data) {
     if (!data || typeof data !== "object" || !Array.isArray(data.routes)) throw new Error("時刻表JSONの routes が不正です");
     if (data.mode !== "manual-verified") throw new Error("時刻表データの運用モードが不正です");
@@ -103,18 +114,19 @@
     if (waiting && data.routes.length) throw new Error("確認待ちデータに路線を入れることはできません");
     if (!waiting && !data.updatedAt) throw new Error("確認済み時刻表には更新日が必要です");
     if (!waiting && Number.isNaN(new Date(data.updatedAt).getTime())) throw new Error("時刻表データの更新日が不正です");
+    const routes = resolveRoutes(data);
     const routeKeys = new Set();
-    for (const route of data.routes) {
+    for (const route of routes) {
       validateRoute(route);
       const key = [route.stopId, route.line, route.direction, route.destination].join("|");
       if (routeKeys.has(key)) throw new Error(`路線が重複しています: ${key}`);
       routeKeys.add(key);
     }
-    if (!waiting && data.routes.length === 0) throw new Error("確認済み時刻表に路線がありません");
-    if (data.routes.length) {
-      const totals = Object.fromEntries(DAY_KEYS.map((day) => [day, data.routes.reduce((sum, route) => sum + route.times[day].length, 0)]));
+    if (!waiting && routes.length === 0) throw new Error("確認済み時刻表に路線がありません");
+    if (routes.length) {
+      const totals = Object.fromEntries(DAY_KEYS.map((day) => [day, routes.reduce((sum, route) => sum + route.times[day].length, 0)]));
       for (const day of DAY_KEYS) if (totals[day] === 0) throw new Error(`${day}の取得件数が0件です`);
-      const serialised = DAY_KEYS.map((day) => JSON.stringify(data.routes.map((route) => route.times[day])));
+      const serialised = DAY_KEYS.map((day) => JSON.stringify(routes.map((route) => route.times[day])));
       if (serialised[0] === serialised[1] && serialised[1] === serialised[2]) throw new Error("全曜日に同じ時刻表が入っています。曜日別に確認してください");
     }
     return true;
@@ -156,6 +168,6 @@
     DAY_KEYS, BOARDING_BUFFER_MINUTES, STALE_DATA_DAYS,
     getTokyoNow, tokyoParts, getServiceDay, parseTimetableTime,
     calculateDepartureCountdown, calculateArrivalTime, formatCountdown, formatTime, formatTokyoDate,
-    validateTime, validateTimetableData, getBoardableTrips, sortByEstimatedArrival, isStale
+    validateTime, resolveRoutes, validateTimetableData, getBoardableTrips, sortByEstimatedArrival, isStale
   };
 })(typeof globalThis === "undefined" ? window : globalThis);
