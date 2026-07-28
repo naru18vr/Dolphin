@@ -75,8 +75,8 @@ test("徒歩1分と2分余裕: 12:23発は境界で除外し、12:24発を候補
   assert.deepEqual(result.trips.map((trip) => T.formatTime(trip.departure, now)), ["12:24"]);
 });
 
-test("青砥駅はバス9分と降車後徒歩4分を合計して概算到着を計算する", () => {
+test("青砥駅の概算到着はバス10分と降車後徒歩4分を合計して計算する", () => {
   const departure = T.parseTimetableTime("1224", at("2026-07-22T12:00:00+09:00"));
-  const arrival = T.calculateArrivalTime(departure, 9 + 4);
-  assert.equal(T.formatTime(arrival, departure), "12:37");
+  const arrival = T.calculateArrivalTime(departure, 10 + 4);
+  assert.equal(T.formatTime(arrival, departure), "12:38");
 });
