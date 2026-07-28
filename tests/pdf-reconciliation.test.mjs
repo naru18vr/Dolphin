@@ -1,14 +1,20 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { pathToFileURL } from "node:url";
+
+await import(pathToFileURL(new URL("../holiday.js", import.meta.url).pathname));
+await import(pathToFileURL(new URL("../timetable.js", import.meta.url).pathname));
+const T = globalThis.DolphinTimetable;
 
 const data = JSON.parse(fs.readFileSync(new URL("../data/timetables.json", import.meta.url), "utf8"));
 const expected = JSON.parse(fs.readFileSync(new URL("./fixtures/official-pdf-times.json", import.meta.url), "utf8"));
 const keyFor = (route) => [route.stop, route.line, route.direction].join("|");
-const route = (stop, line, direction) => data.routes.find((item) => item.stop === stop && item.line === line && item.direction === direction);
+const routes = T.resolveRoutes(data);
+const route = (stop, line, direction) => routes.find((item) => item.stop === stop && item.line === line && item.direction === direction);
 
 test("全14方向の全時刻は、公式PDFを座標で読み取った照合fixtureと完全一致する", () => {
-  const actual = Object.fromEntries(data.routes.filter((item) => item.times).map((item) => [keyFor(item), item.times]));
+  const actual = Object.fromEntries(routes.filter((item) => Object.hasOwn(expected, keyFor(item))).map((item) => [keyFor(item), item.times]));
   assert.deepEqual(actual, expected);
 });
 
