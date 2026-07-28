@@ -9,6 +9,6 @@ const data = JSON.parse(fs.readFileSync(path.join(root, "data/timetables.json"),
 
 globalThis.DolphinTimetable.validateTimetableData(data);
 const counts = Object.fromEntries(globalThis.DolphinTimetable.DAY_KEYS.map((day) => [
-  day, data.routes.reduce((total, route) => total + (route.times?.[day]?.length || 0), 0)
+  day, globalThis.DolphinTimetable.resolveRoutes(data).reduce((total, route) => total + (route.times?.[day]?.length || 0), 0)
 ]));
 console.log(JSON.stringify({ routes: data.routes.length, dataStatus: data.dataStatus, counts }, null, 2));
