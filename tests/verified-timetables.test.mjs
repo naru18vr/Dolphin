@@ -8,13 +8,14 @@ await import(pathToFileURL(new URL("../timetable.js", import.meta.url).pathname)
 
 const T = globalThis.DolphinTimetable;
 const data = JSON.parse(fs.readFileSync(new URL("../data/timetables.json", import.meta.url), "utf8"));
-const route = (stop, line, direction) => data.routes.find((item) => item.stop === stop && item.line === line && item.direction === direction);
+const routes = T.resolveRoutes(data);
+const route = (stop, line, direction) => routes.find((item) => item.stop === stop && item.line === line && item.direction === direction);
 
 test("2026-07-28の公式PDF照合済みデータとして形式・対象範囲を満たす", () => {
   assert.equal(data.mode, "manual-verified");
   assert.equal(data.dataStatus, "verified");
   assert.equal(data.updatedAt, "2026-07-28");
-  assert.equal(data.routes.length, 16);
+  assert.equal(data.routes.length, 17);
   assert.equal(data.routes.some((item) => /京成小岩駅西/.test(`${item.destination}${item.destinationLabel}${item.direction}`)), false);
   assert.doesNotThrow(() => T.validateTimetableData(data));
 });
@@ -73,4 +74,24 @@ test("新小53亀有駅行は共通時刻表を青砥駅・亀有駅で参照す
   assert.equal(aoto.dropOffStop, "青砥駅入口");
   assert.equal(aoto.dropOffWalkMinutes, 5);
   assert.notEqual(aoto.durationMinutes, kameari.durationMinutes);
+});
+
+
+test("五丁目住宅→青砥駅は亀有駅行の共通時刻表を使い、途中の青砥駅東交差点で降車する", () => {
+  const ref = "gochome-shinko58-kameari";
+  const shared = data.sharedTimetables[ref];
+  const rawKameari = data.routes.find((item) => item.stopId === "00020473" && item.destination === "亀有駅" && item.line === "新小58");
+  const rawAoto = data.routes.find((item) => item.stopId === "00020473" && item.destination === "青砥駅" && item.line === "新小58");
+  const aoto = route("五丁目住宅", "新小58", "亀有駅（環七通り）行");
+  const kameari = routes.find((item) => item.stopId === "00020473" && item.destination === "亀有駅" && item.line === "新小58");
+  assert.ok(shared);
+  assert.equal(rawKameari.timesRef, ref);
+  assert.equal(rawAoto.timesRef, ref);
+  assert.deepEqual(aoto.times, kameari.times);
+  assert.equal(aoto.dropOffStop, "青砥駅東交差点");
+  assert.equal(aoto.direction, "亀有駅（環七通り）行");
+  assert.equal(aoto.busDurationMinutes, 9);
+  assert.equal(aoto.stationWalkMinutes, 4);
+  assert.equal(aoto.durationMinutes, 13);
+  assert.match(aoto.verificationNote, /PDF本文の系統・行先欄は空欄/);
 });
