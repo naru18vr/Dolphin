@@ -66,3 +66,17 @@ test("時刻表の異常を黙って通さない", () => {
   const route = validRoute({ times: { 平日: ["1433"], 土曜: ["1434"], 休日: ["1435"] } });
   assert.throws(() => T.validateTimetableData({ mode: "manual-verified", dataStatus: "verified", updatedAt: "2026-07-22T00:00:00+09:00", routes: [route, { ...route }] }), /路線が重複/);
 });
+
+
+test("徒歩1分と2分余裕: 12:23発は境界で除外し、12:24発を候補にする", () => {
+  const now = at("2026-07-22T12:20:00+09:00");
+  const route = validRoute({ stop: "五丁目住宅", destination: "青砥駅", walkMinutes: 1, durationMinutes: 13, times: { 平日: ["1223", "1224"], 土曜: ["1223", "1224"], 休日: ["1223", "1224"] } });
+  const result = T.getBoardableTrips([route], "青砥駅", now);
+  assert.deepEqual(result.trips.map((trip) => T.formatTime(trip.departure, now)), ["12:24"]);
+});
+
+test("青砥駅はバス9分と降車後徒歩4分を合計して概算到着を計算する", () => {
+  const departure = T.parseTimetableTime("1224", at("2026-07-22T12:00:00+09:00"));
+  const arrival = T.calculateArrivalTime(departure, 9 + 4);
+  assert.equal(T.formatTime(arrival, departure), "12:37");
+});
