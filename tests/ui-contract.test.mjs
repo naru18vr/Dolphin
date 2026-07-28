@@ -11,6 +11,8 @@ test("便カードは残り時間・正式行き先・概算所要時間の注�
   assert.match(app, /正式行き先：/);
   assert.match(app, /durationBasis/);
   assert.match(app, /stationWalkMinutes/);
+  assert.match(app, /route\.dropOffStop \|\| route\.destination/);
+  assert.match(app, /降車停留所：/);
   assert.match(app, /降車後 徒歩約/);
   assert.match(app, /道路状況により変動/);
   assert.match(app, /京成バス公式時刻表を確認/);
@@ -29,4 +31,13 @@ test("初期表示は全行き先を比較し、候補なしでも比較へ戻�
   assert.match(app, /compareAllFromEmpty/);
   assert.match(html, /全部まとめて早い順（おすすめ）/);
   assert.match(html, /京成バス公式時刻表をもとに/);
+});
+
+
+test("スマホでは行き先選択を最上部に置き、途中降車停留所を経路名に表示する", () => {
+  const css = fs.readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+  assert.match(css, /\.columns\{display:contents;order:initial\}/);
+  assert.match(css, /\.controls\{order:1\}/);
+  assert.match(css, /\.origin\{order:2\}/);
+  assert.match(css, /\.results\{order:3\}/);
 });
