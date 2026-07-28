@@ -32,7 +32,7 @@ test("新小53亀有駅行は通常便と区役所経由の公式PDFを共通参
   const shared = data.sharedTimetables["okudo3-kameari-shinko53-kameari"];
   assert.ok(shared);
   assert.deepEqual(shared.times.平日.slice(0, 9), ["0637", "0658", "0713", "0728", "0743", "0801", "0819", "0838", "0853"]);
-  assert.deepEqual(shared.times.平日.slice(-8), ["2003", "2023", "2043", "2103", "2118", "2138", "2204"]);
+  assert.deepEqual(shared.times.平日.slice(-8), ["1948", "2003", "2023", "2043", "2103", "2118", "2138", "2204"]);
   assert.equal(shared.times.平日.includes("0808"), false);
   assert.deepEqual(shared.times.土曜, shared.times.休日);
 });
