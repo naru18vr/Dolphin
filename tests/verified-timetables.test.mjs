@@ -82,7 +82,7 @@ test("五丁目住宅→青砥駅は亀有駅行の共通時刻表を使い、�
   const shared = data.sharedTimetables[ref];
   const rawKameari = data.routes.find((item) => item.stopId === "00020473" && item.destination === "亀有駅" && item.line === "新小58");
   const rawAoto = data.routes.find((item) => item.stopId === "00020473" && item.destination === "青砥駅" && item.line === "新小58");
-  const aoto = route("五丁目住宅", "新小58", "亀有駅（環七通り）行");
+  const aoto = routes.find((item) => item.stopId === "00020473" && item.destination === "青砥駅" && item.line === "新小58");
   const kameari = routes.find((item) => item.stopId === "00020473" && item.destination === "亀有駅" && item.line === "新小58");
   assert.ok(shared);
   assert.equal(rawKameari.timesRef, ref);
