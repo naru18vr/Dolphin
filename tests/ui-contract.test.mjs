@@ -42,3 +42,10 @@ test("スマホでは行き先選択を最上部に置き、途中降車停留�
   assert.match(css, /\.results\{order:3\}/);
   assert.doesNotMatch(css, /\.columns\{display:flex;flex-direction:column;order:2\}/);
 });
+
+
+test("路線図案内は徒歩地図の直前にあり、4つの公式停留所ページへつながる", () => {
+  assert.match(html, /バス停の路線図・系統を確認/);
+  assert.ok(html.indexOf('class="route-map-panel"') < html.indexOf('class="map-panel"'));
+  for (const id of ["00020473", "00020384", "00020360", "00020300"]) assert.match(html, new RegExp(`busstop=${id}`));
+});
