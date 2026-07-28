@@ -51,7 +51,7 @@ test("PDFの曜日区分を守り、五丁目住宅→亀有駅の照合注記�
   assert.notDeepEqual(small74Outo3.times.土曜, small74Outo3.times.休日);
   assert.notDeepEqual(small74Outo6.times.土曜, small74Outo6.times.休日);
   const kameari = route("五丁目住宅", "新小58", "亀有駅（環七通り）行");
-  assert.equal(kameari.verificationNote, "PDF本文の系統・行先欄は空欄。公式一覧とPDFファイル名で照合");
+  assert.equal(kameari.verificationNote, "PDF本文の系統・行先欄は空欄。京成バス公式一覧とPDFファイル名で新小58・亀有駅（環七通り）行と照合。");
   assert.deepEqual(kameari.times.土曜, kameari.times.休日);
   const newkane = route("奥戸六丁目", "新金02", "金町駅行");
   assert.deepEqual(newkane.times.土曜, newkane.times.休日);
