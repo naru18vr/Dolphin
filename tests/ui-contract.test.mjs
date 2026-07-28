@@ -23,7 +23,7 @@ test("テスト時刻はURL指定時だけ使い、30秒ごとに表示を更新
   assert.match(app, /new URLSearchParams\(location\.search\)\.get\("now"\)/);
   assert.match(app, /テスト時刻/);
   assert.match(app, /setInterval\(drawResults, 30000\)/);
-  assert.match(html, /20260724-ui/);
+  assert.match(html, /app\.js\?v=/);
 });
 
 test("初期表示は全行き先を比較し、候補なしでも比較へ戻れる", () => {
