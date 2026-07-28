@@ -10,6 +10,8 @@ test("便カードは残り時間・正式行き先・概算所要時間の注�
   assert.match(app, /class="departure-time"/);
   assert.match(app, /正式行き先：/);
   assert.match(app, /durationBasis/);
+  assert.match(app, /stationWalkMinutes/);
+  assert.match(app, /降車後 徒歩約/);
   assert.match(app, /道路状況により変動/);
   assert.match(app, /京成バス公式時刻表を確認/);
   assert.match(app, /Googleマップで停留所へ/);
