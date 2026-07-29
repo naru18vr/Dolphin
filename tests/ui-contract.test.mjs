@@ -51,3 +51,12 @@ test("路線図案内は徒歩地図の直前にあり、4つの公式停留所�
   assert.equal((html.match(/routemap-kanamachi2604\.pdf/g) || []).length, 4);
   assert.match(html, /路線図PDFを開く/);
 });
+
+
+test("奥戸三丁目の2停留所は環七側と亀有線・新小53側で区別して警告する", () => {
+  assert.match(app, /奥戸三丁目（環七・奥戸7丁目側）/);
+  assert.match(app, /奥戸三丁目（亀有線・新小53）/);
+  assert.match(app, /新小53を利用する場合は、亀有線側/);
+  assert.match(app, /stopDisplayNames/);
+  assert.match(app, /stop-warning/);
+});
