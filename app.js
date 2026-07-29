@@ -127,7 +127,7 @@ function drawResults() {
 
 async function loadTimetables() {
   try {
-    const response = await fetch("data/timetables.json", { cache: "no-store" });
+    const response = await fetch("data/timetables.json?v=20260729-cache1", { cache: "force-cache" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     globalThis.DolphinTimetable.validateTimetableData(data);
