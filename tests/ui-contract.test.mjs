@@ -77,3 +77,10 @@ test("軽量化: 時刻表はバージョン付きキャッシュを使い、便
   assert.doesNotMatch(html, /href="timetable\.css/);
   assert.doesNotMatch(html, /href="departure\.css/);
 });
+
+
+test("青砥駅東交差点で降車する候補だけに京成青砥駅までの徒歩案内を表示する", () => {
+  assert.match(app, /route\.dropOffStop === "青砥駅東交差点"/);
+  assert.match(app, /青砥駅東交差点から京成青砥駅まで徒歩で案内/);
+  assert.match(app, /destination=\$\{enc\("京成青砥駅"\)\}/);
+});
