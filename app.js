@@ -1,13 +1,18 @@
 const originCoord = "35.732025,139.863983";
 const stops = {
-  "五丁目住宅": { coord: "35.732030,139.864110", walk: 1, note: "院を出てすぐの最寄り停留所です。道路を渡る前に、行き先と停留所標識の方面を確認してください。", marks: ["鈴木接骨院・ドルフィンはりきゅう院", "五丁目住宅バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020473" },
-  "奥戸3丁目": { coord: "35.735039,139.863480", walk: 5, note: "院から北へ進み、奥戸7丁目1の環七通り寄りにある停留所へ向かいます。", marks: ["ドルフィン鍼灸院", "奥戸三丁目児童遊園付近", "奥戸7丁目1・奥戸三丁目バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020384" },
-  "奥戸三丁目（亀有線）": { query: "奥戸三丁目（亀有線） バス停", walk: 5, note: "既存の奥戸三丁目とは別の、亀有線の停留所です。新小53・亀有駅行の標識を確認してください。", marks: ["ドルフィン鍼灸院", "奥戸三丁目（亀有線）バス停", "新小53・亀有駅行"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020300" },
-  "奥戸6丁目": { coord: "35.731575,139.868098", walk: 6, note: "同名停留所が道路の両側にあるため、乗る駅方面を必ず確認してください。", marks: ["五丁目住宅バス停", "奥戸六丁目バス停", "北沼公園方面"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020360" }
+  "五丁目住宅": { mapKey: "五丁目住宅", coord: "35.732030,139.864110", walk: 1, note: "院を出てすぐの最寄り停留所です。道路を渡る前に、行き先と停留所標識の方面を確認してください。", marks: ["鈴木接骨院・ドルフィンはりきゅう院", "五丁目住宅バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020473" },
+  "奥戸三丁目（環七・奥戸7丁目側）": { mapKey: "奥戸3丁目", coord: "35.735039,139.863480", walk: 5, note: "奥戸三丁目（亀有線・新小53）とは別の停留所です。小74・新小52・新小58などを利用する場合はこちらです。新小53を利用する場合は亀有線側をご確認ください。", marks: ["ドルフィン鍼灸院", "奥戸三丁目児童遊園付近", "奥戸7丁目1・環七通り側", "奥戸三丁目バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020384" },
+  "奥戸三丁目（亀有線・新小53）": { query: "奥戸三丁目（亀有線） バス停", walk: 5, note: "環七・奥戸7丁目側の奥戸三丁目とは別の停留所です。新小53の亀有駅行・新小岩駅東北広場行を利用する場合はこちらをご確認ください。", marks: ["ドルフィン鍼灸院", "奥戸三丁目（亀有線）バス停", "新小53", "亀有駅行・新小岩駅東北広場行"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020300" },
+  "奥戸6丁目": { mapKey: "奥戸6丁目", coord: "35.731575,139.868098", walk: 6, note: "同名停留所が道路の両側にあるため、乗る駅方面を必ず確認してください。", marks: ["五丁目住宅バス停", "奥戸六丁目バス停", "北沼公園方面"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020360" }
 };
-const stopAliases = { "奥戸三丁目": "奥戸3丁目", "奥戸3丁目": "奥戸3丁目", "奥戸三丁目（亀有線）": "奥戸三丁目（亀有線）", "奥戸六丁目": "奥戸6丁目", "奥戸6丁目": "奥戸6丁目", "五丁目住宅": "五丁目住宅" };
+const stopAliases = {
+  "奥戸三丁目": "奥戸三丁目（環七・奥戸7丁目側）", "奥戸3丁目": "奥戸三丁目（環七・奥戸7丁目側）", "奥戸三丁目（環七・奥戸7丁目側）": "奥戸三丁目（環七・奥戸7丁目側）",
+  "奥戸三丁目（亀有線）": "奥戸三丁目（亀有線・新小53）", "奥戸三丁目（亀有線・新小53）": "奥戸三丁目（亀有線・新小53）",
+  "奥戸六丁目": "奥戸6丁目", "奥戸6丁目": "奥戸6丁目", "五丁目住宅": "五丁目住宅"
+};
+const stopDisplayNames = { "奥戸三丁目": "奥戸三丁目（環七・奥戸7丁目側）", "奥戸3丁目": "奥戸三丁目（環七・奥戸7丁目側）", "奥戸三丁目（亀有線）": "奥戸三丁目（亀有線・新小53）" };
 const destinations = ["金町駅", "亀有駅", "青砥駅", "小岩駅", "京成小岩駅", "新小岩駅"];
-const routeStops = { "金町駅": ["奥戸3丁目", "奥戸6丁目"], "亀有駅": ["奥戸3丁目", "奥戸6丁目", "五丁目住宅", "奥戸三丁目（亀有線）"], "青砥駅": ["奥戸3丁目", "五丁目住宅", "奥戸三丁目（亀有線）"], "小岩駅": ["奥戸3丁目", "奥戸6丁目"], "京成小岩駅": ["奥戸6丁目"], "新小岩駅": ["奥戸3丁目", "奥戸6丁目", "五丁目住宅"] };
+const routeStops = { "金町駅": ["奥戸三丁目（環七・奥戸7丁目側）", "奥戸6丁目"], "亀有駅": ["奥戸三丁目（環七・奥戸7丁目側）", "奥戸6丁目", "五丁目住宅", "奥戸三丁目（亀有線・新小53）"], "青砥駅": ["奥戸三丁目（環七・奥戸7丁目側）", "五丁目住宅", "奥戸三丁目（亀有線・新小53）"], "小岩駅": ["奥戸三丁目（環七・奥戸7丁目側）", "奥戸6丁目"], "京成小岩駅": ["奥戸6丁目"], "新小岩駅": ["奥戸三丁目（環七・奥戸7丁目側）", "奥戸6丁目", "五丁目住宅"] };
 let selected = "金町駅";
 let mode = "all";
 let mapStop = "五丁目住宅";
@@ -25,6 +30,10 @@ function stopFor(name) {
   return stops[stopAliases[name]];
 }
 
+function displayStopName(name) {
+  return stopDisplayNames[name] || name;
+}
+
 function stopGoogleLink(name) {
   const stop = stopFor(name);
   return stop ? `https://www.google.com/maps/dir/?api=1&origin=${originCoord}&destination=${enc(stop.coord || stop.query)}&travelmode=walking` : "https://www.google.com/maps";
@@ -38,7 +47,7 @@ function appNow() {
 
 function drawMap() {
   const stop = stops[mapStop];
-  $("map").src = `map.html?stop=${enc(mapStop)}&v=20260719-3`;
+  $("map").src = `map.html?stop=${enc(stop.mapKey || mapStop)}&v=20260729-1`;
   $("mapTitle").textContent = `${mapStop}バス停`;
   $("mapNote").textContent = stop.note;
   $("landmarks").innerHTML = `<b>地図で見る目印</b>${stop.marks.map((mark, index) => `<div class="landmark"><span>${index + 1}</span>${escapeHtml(mark)}</div>`).join("")}`;
@@ -88,6 +97,12 @@ function tripCard(trip, index, now) {
   return `<article class="bus ${index === 0 ? "best" : ""}"><div><span class="candidate-label">${title}</span><div class="bus-route">${escapeHtml(route.stop)}バス停 → ${escapeHtml(displayDestination)}</div><div class="direction">${directionDetail}</div><div class="trip-time"><div class="departure-time"><small>発車</small><span>${globalThis.DolphinTimetable.formatTime(departure, now)}発</span></div><b class="countdown">${globalThis.DolphinTimetable.formatCountdown(countdownMinutes)}</b><i>→</i><div><small>概算到着</small><strong>${globalThis.DolphinTimetable.formatTime(arrival, now)}ごろ</strong></div></div><div class="details">${durationText}<br>🚶 停留所まで徒歩約${route.walkMinutes}分（徒歩時間に${globalThis.DolphinTimetable.BOARDING_BUFFER_MINUTES}分の余裕を含めて検索）<br><small>${escapeHtml(durationNote)}</small></div></div><div class="trip-links"><a class="official" href="${escapeHtml(route.officialUrl)}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認 ↗</a><a class="map-link" href="${stopGoogleLink(route.stop)}" target="_blank" rel="noreferrer">Googleマップで停留所へ ↗</a></div></article>`;
 }
 
+function okudoStopWarning(trips) {
+  const hasOkudo3 = trips.some(({ route }) => route.stop === "奥戸三丁目" || route.stop === "奥戸3丁目" || route.stop === "奥戸三丁目（亀有線）");
+  if (!hasOkudo3) return "";
+  return `<div class="stop-warning">⚠️ <b>奥戸三丁目には、場所の異なる2つのバス停があります。</b><ul><li>奥戸三丁目（環七・奥戸7丁目側）</li><li>奥戸三丁目（亀有線・新小53）</li></ul>新小53を利用する場合は、亀有線側の停留所をご確認ください。系統番号・行先・公式停留所名・停留所IDも乗車前にご確認ください。</div>`;
+}
+
 function drawResults() {
   const now = appNow();
   const dayInfo = globalThis.DolphinTimetable.getServiceDay(now);
@@ -98,16 +113,16 @@ function drawResults() {
   const stopNames = mode === "all" ? Object.keys(stops) : (routeStops[selected] || []);
   const message = dataMessage(now);
   if (message) {
-    $("results").innerHTML = `${message}${officialCards(stopNames, mode === "one" ? selected : "")}`;
+    $("results").innerHTML = `${message}${okudoStopWarning((timetableData && timetableData.routes || []).filter((route) => mode === "all" || route.destination === selected).map((route) => ({ route })))}${officialCards(stopNames, mode === "one" ? selected : "")}`;
     return;
   }
   const { trips } = globalThis.DolphinTimetable.getBoardableTrips(timetableData.routes, mode === "one" ? selected : null, now);
   if (!trips.length) {
-    $("results").innerHTML = `<div class="data-warning"><b>本日の乗車可能な便は終了しました。</b><br>翌日の時刻表は京成バス公式ページでご確認ください。</div>${mode === "one" ? `<button id="compareAllFromEmpty" class="search primary compare-cta">☷ ほかの行き先も全部まとめて比較する ›</button>` : ""}${officialCards(stopNames, mode === "one" ? selected : "")}`;
+    $("results").innerHTML = `<div class="data-warning"><b>本日の乗車可能な便は終了しました。</b><br>翌日の時刻表は京成バス公式ページでご確認ください。</div>${okudoStopWarning((timetableData && timetableData.routes || []).filter((route) => mode === "all" || route.destination === selected).map((route) => ({ route })))}${mode === "one" ? `<button id="compareAllFromEmpty" class="search primary compare-cta">☷ ほかの行き先も全部まとめて比較する ›</button>` : ""}${officialCards(stopNames, mode === "one" ? selected : "")}`;
     $("compareAllFromEmpty")?.addEventListener("click", () => { mode = "all"; drawControls(); drawResults(); });
     return;
   }
-  $("results").innerHTML = `<div class="data-updated">時刻表データ更新：${escapeHtml(String(timetableData.updatedAt).slice(0, 10))}</div>${trips.slice(0, 5).map((trip, index) => tripCard(trip, index, now)).join("")}`;
+  $("results").innerHTML = `${okudoStopWarning(trips)}<div class="data-updated">時刻表データ更新：${escapeHtml(String(timetableData.updatedAt).slice(0, 10))}</div>${trips.slice(0, 5).map((trip, index) => tripCard(trip, index, now)).join("")}`;
 }
 
 async function loadTimetables() {
