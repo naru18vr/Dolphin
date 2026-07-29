@@ -60,3 +60,12 @@ test("奥戸三丁目の2停留所は環七側と亀有線・新小53側で区�
   assert.match(app, /stopDisplayNames/);
   assert.match(app, /stop-warning/);
 });
+
+
+test("亀有線・新小53側の奥戸三丁目は徒歩地図に座標と6分ルートを持つ", () => {
+  const map = fs.readFileSync(new URL("../map.html", import.meta.url), "utf8");
+  assert.match(app, /奥戸三丁目（亀有線・新小53）/);
+  assert.match(app, /35\.7344375,139\.8621875/);
+  assert.match(map, /奥戸3丁目10付近/);
+  assert.match(map, /35\.7344375,139\.8621875/);
+});
