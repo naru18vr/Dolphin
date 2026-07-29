@@ -2,7 +2,7 @@ const originCoord = "35.732025,139.863983";
 const stops = {
   "五丁目住宅": { mapKey: "五丁目住宅", coord: "35.732030,139.864110", walk: 1, note: "院を出てすぐの最寄り停留所です。道路を渡る前に、行き先と停留所標識の方面を確認してください。", marks: ["鈴木接骨院・ドルフィンはりきゅう院", "五丁目住宅バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020473" },
   "奥戸三丁目（環七・奥戸7丁目側）": { mapKey: "奥戸3丁目", coord: "35.735039,139.863480", walk: 5, note: "奥戸三丁目（亀有線・新小53）とは別の停留所です。小74・新小52・新小58などを利用する場合はこちらです。新小53を利用する場合は亀有線側をご確認ください。", marks: ["ドルフィン鍼灸院", "奥戸三丁目児童遊園付近", "奥戸7丁目1・環七通り側", "奥戸三丁目バス停"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020384" },
-  "奥戸三丁目（亀有線・新小53）": { query: "奥戸三丁目（亀有線） バス停", walk: 5, note: "環七・奥戸7丁目側の奥戸三丁目とは別の停留所です。新小53の亀有駅行・新小岩駅東北広場行を利用する場合はこちらをご確認ください。", marks: ["ドルフィン鍼灸院", "奥戸三丁目（亀有線）バス停", "新小53", "亀有駅行・新小岩駅東北広場行"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020300" },
+  "奥戸三丁目（亀有線・新小53）": { mapKey: "奥戸三丁目（亀有線・新小53）", coord: "35.7344375,139.8621875", walk: 6, note: "環七・奥戸7丁目側の奥戸三丁目とは別の停留所です。奥戸3丁目10付近にある、新小53の亀有駅行・新小岩駅東北広場行を利用する停留所です。", marks: ["ドルフィン鍼灸院", "奥戸三丁目（亀有線）バス停", "奥戸3丁目10付近", "新小53・亀有駅行 / 新小岩駅東北広場行"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020300" },
   "奥戸6丁目": { mapKey: "奥戸6丁目", coord: "35.731575,139.868098", walk: 6, note: "同名停留所が道路の両側にあるため、乗る駅方面を必ず確認してください。", marks: ["五丁目住宅バス停", "奥戸六丁目バス停", "北沼公園方面"], official: "https://transfer-cloud.navitime.biz/keiseibus-group/courses?busstop=00020360" }
 };
 const stopAliases = {
