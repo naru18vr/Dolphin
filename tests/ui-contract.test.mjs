@@ -69,3 +69,11 @@ test("亀有線・新小53側の奥戸三丁目は徒歩地図に座標と6分�
   assert.match(map, /奥戸3丁目10付近/);
   assert.match(map, /35\.7344375,139\.8621875/);
 });
+
+
+test("軽量化: 時刻表はバージョン付きキャッシュを使い、便表示CSSは1ファイルへ統合する", () => {
+  assert.match(app, /timetables\.json\?v=20260729-cache1/);
+  assert.match(app, /cache: "force-cache"/);
+  assert.doesNotMatch(html, /timetable\.css/);
+  assert.doesNotMatch(html, /departure\.css/);
+});
