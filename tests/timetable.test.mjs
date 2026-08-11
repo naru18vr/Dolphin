@@ -15,6 +15,11 @@ const validRoute = (overrides = {}) => ({
   ...overrides
 });
 
+test("秒を含む現在時刻は次の分まで切り上げる", () => {
+  assert.equal(T.calculateDepartureCountdown(at("2026-07-22T14:25:01+09:00"), at("2026-07-22T14:32:00+09:00")), 7);
+  assert.equal(T.calculateDepartureCountdown(at("2026-07-22T14:31:01+09:00"), at("2026-07-22T14:32:00+09:00")), 1);
+});
+
 test("残り時間: 14:25から14:32発は7分", () => {
   assert.equal(T.calculateDepartureCountdown(at("2026-07-22T14:25:00+09:00"), at("2026-07-22T14:32:00+09:00")), 7);
   assert.equal(T.calculateDepartureCountdown(at("2026-07-22T14:31:00+09:00"), at("2026-07-22T14:32:00+09:00")), 1);
