@@ -19,6 +19,8 @@ let mapStop = "五丁目住宅";
 let timetableData = null;
 let timetableError = "";
 const testNowValue = new URLSearchParams(location.search).get("now");
+const parsedTestNow = testNowValue ? new Date(testNowValue) : null;
+const isTestNow = Boolean(parsedTestNow && !Number.isNaN(parsedTestNow.getTime()));
 const $ = (id) => document.getElementById(id);
 const enc = encodeURIComponent;
 
@@ -40,14 +42,13 @@ function stopGoogleLink(name) {
 }
 
 function appNow() {
-  if (!testNowValue) return globalThis.DolphinTimetable.getTokyoNow();
-  const parsed = new Date(testNowValue);
-  return Number.isNaN(parsed.getTime()) ? globalThis.DolphinTimetable.getTokyoNow() : parsed;
+  if (!isTestNow) return globalThis.DolphinTimetable.getTokyoNow();
+  return parsedTestNow;
 }
 
 function drawMap() {
   const stop = stops[mapStop];
-  $("map").src = `map.html?stop=${enc(stop.mapKey || mapStop)}&v=20260729-1`;
+  $("map").src = `map.html?stop=${enc(stop.mapKey || mapStop)}&v=20260812-1`;
   $("mapTitle").textContent = `${mapStop}バス停`;
   $("mapNote").textContent = stop.note;
   $("landmarks").innerHTML = `<b>地図で見る目印</b>${stop.marks.map((mark, index) => `<div class="landmark"><span>${index + 1}</span>${escapeHtml(mark)}</div>`).join("")}`;
@@ -110,7 +111,7 @@ function drawResults() {
   const now = appNow();
   const dayInfo = globalThis.DolphinTimetable.getServiceDay(now);
   const dayLabel = dayInfo.serviceDay ? `${dayInfo.serviceDay}ダイヤ` : "ダイヤ要確認";
-  $("now").textContent = `現在 ${globalThis.DolphinTimetable.formatTime(now)}（日本時間${testNowValue ? "・テスト時刻" : ""}）`;
+  $("now").textContent = `現在 ${globalThis.DolphinTimetable.formatTime(now)}（日本時間${isTestNow ? "・テスト時刻" : ""}）`;
   $("resultTime").textContent = `${globalThis.DolphinTimetable.formatTokyoDate(now)}・${dayLabel}`;
   $("resultTitle").textContent = mode === "all" ? "全部まとめて早く着く順" : `${selected}へ最も早く着く候補`;
   const stopNames = mode === "all" ? Object.keys(stops) : (routeStops[selected] || []);
