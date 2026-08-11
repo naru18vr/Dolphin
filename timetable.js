@@ -45,7 +45,7 @@
   }
 
   function calculateDepartureCountdown(now, departure) {
-    return Math.floor((departure.getTime() - now.getTime()) / 60000);
+    return Math.ceil((departure.getTime() - now.getTime()) / 60000);
   }
 
   function calculateArrivalTime(departure, durationMinutes) {
