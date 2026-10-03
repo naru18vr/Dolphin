@@ -18,6 +18,7 @@ let mode = "all";
 let mapStop = "五丁目住宅";
 let timetableData = null;
 let timetableError = "";
+let timetableLoading = true;
 const testNowValue = new URLSearchParams(location.search).get("now");
 const parsedTestNow = testNowValue ? new Date(testNowValue) : null;
 const isTestNow = Boolean(parsedTestNow && !Number.isNaN(parsedTestNow.getTime()));
@@ -47,8 +48,9 @@ function appNow() {
 }
 
 function drawMap() {
+  const focusedStop = document.activeElement?.dataset?.stop;
   const stop = stops[mapStop];
-  $("map").src = `map.html?stop=${enc(stop.mapKey || mapStop)}&v=20260812-1`;
+  $("map").src = `map.html?stop=${enc(stop.mapKey || mapStop)}&v=20261003-ui1`;
   $("mapTitle").textContent = `${mapStop}バス停`;
   $("mapNote").textContent = stop.note;
   $("landmarks").innerHTML = `<b>地図で見る目印</b>${stop.marks.map((mark, index) => `<div class="landmark"><span>${index + 1}</span>${escapeHtml(mark)}</div>`).join("")}`;
@@ -56,27 +58,28 @@ function drawMap() {
   $("currentRoute").href = `https://www.google.com/maps/dir/?api=1&destination=${enc(stop.coord || stop.query)}&travelmode=walking`;
   $("mapTabs").innerHTML = Object.entries(stops).filter(([, value]) => value.coord).map(([name, value]) => `<button class="map-tab ${name === mapStop ? "active" : ""}" data-stop="${name}" aria-pressed="${name === mapStop}"><span>${name}</span><b>約 ${value.walk}分</b></button>`).join("");
   document.querySelectorAll("[data-stop]").forEach((button) => { button.onclick = () => { mapStop = button.dataset.stop; drawMap(); }; });
+  if (focusedStop) document.querySelector(`[data-stop="${focusedStop}"]`)?.focus();
 }
 
 function drawControls() {
-  $("destinations").innerHTML = destinations.map((destination) => `<button class="destination ${destination === selected ? "active" : ""}" data-d="${destination}" aria-pressed="${destination === selected}">${destination === selected ? "✓ " : ""}${destination}</button>`).join("");
+  const focusedDestination = document.activeElement?.dataset?.d;
+  $("destinations").innerHTML = destinations.map((destination) => `<button class="destination ${mode === "one" && destination === selected ? "active" : ""}" data-d="${destination}" aria-pressed="${mode === "one" && destination === selected}">${mode === "one" && destination === selected ? "✓ " : ""}${destination}</button>`).join("");
   document.querySelectorAll("[data-d]").forEach((button) => { button.onclick = () => { selected = button.dataset.d; mode = "one"; drawControls(); drawResults(); }; });
-  $("oneLabel").textContent = `${selected}だけ見る`;
   $("all").className = `search ${mode === "all" ? "primary" : "secondary"}`;
-  $("one").className = `search ${mode === "one" ? "primary" : "secondary"}`;
   $("all").setAttribute("aria-pressed", String(mode === "all"));
-  $("one").setAttribute("aria-pressed", String(mode === "one"));
+  if (focusedDestination) document.querySelector(`[data-d="${focusedDestination}"]`)?.focus();
   $("walks").innerHTML = Object.entries(stops).map(([name, stop]) => `<div class="walk">🚶 ${name}<strong>${stop.walk}分</strong></div>`).join("");
 }
 
 function officialCards(stopNames, destination = "") {
   return stopNames.map((name) => {
     const stop = stops[name];
-    return `<article class="bus"><div><div class="bus-route">${name}バス停${destination ? ` → ${escapeHtml(destination)}` : ""}</div><div class="details">🚶 鍼灸院から徒歩約${stop.walk}分<br><small>行き先・系統・のりばは公式ページで確認してください。</small></div></div><div class="trip-links"><a class="official" href="${stop.official}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認 ↗</a><a class="map-link" href="${stopGoogleLink(name)}" target="_blank" rel="noreferrer">Googleマップで停留所へ ↗</a></div></article>`;
+    return `<article class="bus"><div><div class="bus-route">${name}バス停${destination ? ` → ${escapeHtml(destination)}` : ""}</div><div class="details">🚶 鍼灸院から徒歩約${stop.walk}分<br><small>行き先・系統・のりばは公式ページで確認してください。</small></div></div><div class="trip-links"><a class="official" href="${stop.official}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認</a><a class="map-link" href="${stopGoogleLink(name)}" target="_blank" rel="noreferrer">Googleマップで停留所へ</a></div></article>`;
   }).join("");
 }
 
 function dataMessage(now) {
+  if (timetableLoading) return `<div class="data-loading" role="status">時刻表を読み込んでいます…</div>`;
   const info = globalThis.DolphinTimetable.getServiceDay(now);
   if (info.warning) return `<div class="data-warning">${escapeHtml(info.warning)}</div>`;
   if (timetableError) return `<div class="data-warning"><b>時刻表データを読み込めませんでした。</b><br>京成バス公式時刻表をご確認ください。</div>`;
@@ -96,15 +99,15 @@ function tripCard(trip, index, now) {
     : `正式行き先：${escapeHtml(route.destinationLabel)} · 系統 ${escapeHtml(route.line)}`;
   const durationText = route.busDurationMinutes && stationWalkMinutes ? `バス約${route.busDurationMinutes}分 + 降車後 徒歩約${stationWalkMinutes}分（合計約${route.durationMinutes}分）` : `バス所要時間 約${route.durationMinutes}分`;
   const aotoStationWalkLink = route.dropOffStop === "青砥駅東交差点"
-    ? `<a class="map-link" href="https://www.google.com/maps/dir/?api=1&origin=${enc("青砥駅東交差点")}&destination=${enc("京成青砥駅")}&travelmode=walking" target="_blank" rel="noreferrer">青砥駅東交差点から京成青砥駅まで徒歩で案内 ↗</a>`
+    ? `<a class="map-link" href="https://www.google.com/maps/dir/?api=1&origin=${enc("青砥駅東交差点")}&destination=${enc("京成青砥駅")}&travelmode=walking" target="_blank" rel="noreferrer">青砥駅東交差点から京成青砥駅まで徒歩で案内</a>`
     : "";
-  return `<article class="bus ${index === 0 ? "best" : ""}"><div><span class="candidate-label">${title}</span><div class="bus-route">${escapeHtml(route.stop)}バス停 → ${escapeHtml(displayDestination)}</div><div class="direction">${directionDetail}</div><div class="trip-time"><div class="departure-time"><small>発車</small><span>${globalThis.DolphinTimetable.formatTime(departure, now)}発</span></div><b class="countdown">${globalThis.DolphinTimetable.formatCountdown(countdownMinutes)}</b><i>→</i><div><small>概算到着</small><strong>${globalThis.DolphinTimetable.formatTime(arrival, now)}ごろ</strong></div></div><div class="details">${durationText}<br>🚶 停留所まで徒歩約${route.walkMinutes}分（徒歩時間に${globalThis.DolphinTimetable.BOARDING_BUFFER_MINUTES}分の余裕を含めて検索）<br><small>${escapeHtml(durationNote)}</small></div></div><div class="trip-links"><a class="official" href="${escapeHtml(route.officialUrl)}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認 ↗</a><a class="map-link" href="${stopGoogleLink(route.stop)}" target="_blank" rel="noreferrer">Googleマップで停留所へ ↗</a>${aotoStationWalkLink}</div></article>`;
+  return `<article class="bus ${index === 0 ? "best" : ""}"><div><div class="candidate-head"><span class="candidate-label">${title}</span><b class="line-badge">${escapeHtml(route.line)}</b></div><div class="bus-route">${escapeHtml(displayStopName(route.stop))}バス停 → ${escapeHtml(displayDestination)}</div><div class="direction">${directionDetail}</div><div class="trip-time"><div class="departure-time"><small>発車</small><span>${globalThis.DolphinTimetable.formatTime(departure, now)}発</span></div><b class="countdown">${globalThis.DolphinTimetable.formatCountdown(countdownMinutes)}</b><i>→</i><div><small>${escapeHtml(route.destination)}に概算到着</small><strong>${globalThis.DolphinTimetable.formatTime(arrival, now)}ごろ</strong></div></div><div class="details">${durationText}<br>🚶 停留所まで徒歩約${route.walkMinutes}分（徒歩時間に${globalThis.DolphinTimetable.BOARDING_BUFFER_MINUTES}分の余裕を含めて検索）<br><details class="estimate-note"><summary>所要時間の根拠・注意</summary><small>${escapeHtml(durationNote)}</small></details></div></div><div class="trip-links"><a class="official" href="${escapeHtml(route.officialUrl)}" target="_blank" rel="noreferrer">京成バス公式時刻表を確認</a><a class="map-link" href="${stopGoogleLink(route.stop)}" target="_blank" rel="noreferrer">Googleマップで停留所へ</a>${aotoStationWalkLink}</div></article>`;
 }
 
 function okudoStopWarning(trips) {
   const hasOkudo3 = trips.some(({ route }) => route.stop === "奥戸三丁目" || route.stop === "奥戸3丁目" || route.stop === "奥戸三丁目（亀有線）");
   if (!hasOkudo3) return "";
-  return `<div class="stop-warning">⚠️ <b>奥戸三丁目には、場所の異なる2つのバス停があります。</b><ul><li>奥戸三丁目（環七・奥戸7丁目側）</li><li>奥戸三丁目（亀有線・新小53）</li></ul>新小53を利用する場合は、亀有線側の停留所をご確認ください。系統番号・行先・公式停留所名・停留所IDも乗車前にご確認ください。</div>`;
+  return `<div class="stop-warning"><b>⚠ 奥戸三丁目は2か所あります</b><br>新小53を利用する場合は、亀有線側の停留所をご確認ください。<details><summary>2つの停留所を確認</summary><ul><li>奥戸三丁目（環七・奥戸7丁目側）</li><li>奥戸三丁目（亀有線・新小53）</li></ul>乗車前に系統番号・行先・公式停留所名・停留所IDをご確認ください。</details></div>`;
 }
 
 function drawResults() {
@@ -113,20 +116,21 @@ function drawResults() {
   const dayLabel = dayInfo.serviceDay ? `${dayInfo.serviceDay}ダイヤ` : "ダイヤ要確認";
   $("now").textContent = `現在 ${globalThis.DolphinTimetable.formatTime(now)}（日本時間${isTestNow ? "・テスト時刻" : ""}）`;
   $("resultTime").textContent = `${globalThis.DolphinTimetable.formatTokyoDate(now)}・${dayLabel}`;
-  $("resultTitle").textContent = mode === "all" ? "全部まとめて早く着く順" : `${selected}へ最も早く着く候補`;
+  $("resultTitle").textContent = mode === "all" ? "早く着くバス" : `${selected}へ行くバス`;
   const stopNames = mode === "all" ? Object.keys(stops) : (routeStops[selected] || []);
   const message = dataMessage(now);
+  if (timetableLoading) { $("results").innerHTML = message; return; }
   if (message) {
     $("results").innerHTML = `${message}${okudoStopWarning((timetableData && timetableData.routes || []).filter((route) => mode === "all" || route.destination === selected).map((route) => ({ route })))}${officialCards(stopNames, mode === "one" ? selected : "")}`;
     return;
   }
   const { trips } = globalThis.DolphinTimetable.getBoardableTrips(timetableData.routes, mode === "one" ? selected : null, now);
   if (!trips.length) {
-    $("results").innerHTML = `<div class="data-warning"><b>本日の乗車可能な便は終了しました。</b><br>翌日の時刻表は京成バス公式ページでご確認ください。</div>${okudoStopWarning((timetableData && timetableData.routes || []).filter((route) => mode === "all" || route.destination === selected).map((route) => ({ route })))}${mode === "one" ? `<button id="compareAllFromEmpty" class="search primary compare-cta">☷ ほかの行き先も全部まとめて比較する ›</button>` : ""}${officialCards(stopNames, mode === "one" ? selected : "")}`;
+    $("results").innerHTML = `<div class="data-warning"><b>本日の乗車可能な便は終了しました。</b><br>翌日の時刻表は京成バス公式ページでご確認ください。</div>${okudoStopWarning((timetableData && timetableData.routes || []).filter((route) => mode === "all" || route.destination === selected).map((route) => ({ route })))}${mode === "one" ? `<button id="compareAllFromEmpty" class="search primary compare-cta">ほかの駅のバスも見る</button>` : ""}${officialCards(stopNames, mode === "one" ? selected : "")}`;
     $("compareAllFromEmpty")?.addEventListener("click", () => { mode = "all"; drawControls(); drawResults(); });
     return;
   }
-  $("results").innerHTML = `${okudoStopWarning(trips)}<div class="data-updated">時刻表データ更新：${escapeHtml(String(timetableData.updatedAt).slice(0, 10))}</div>${trips.slice(0, 5).map((trip, index) => tripCard(trip, index, now)).join("")}`;
+  $("results").innerHTML = `${okudoStopWarning(trips)}<div class="data-updated">時刻表更新：${escapeHtml(String(timetableData.updatedAt).slice(0, 10))}</div>${trips.slice(0, 5).map((trip, index) => tripCard(trip, index, now)).join("")}`;
 }
 
 async function loadTimetables() {
@@ -139,13 +143,13 @@ async function loadTimetables() {
   } catch (error) {
     timetableError = error instanceof Error ? error.message : "unknown error";
   }
+  timetableLoading = false;
   drawResults();
 }
-
-$("one").onclick = () => { mode = "one"; drawResults(); };
-$("all").onclick = () => { mode = "all"; drawResults(); };
+$("all").onclick = () => { mode = "all"; drawControls(); drawResults(); };
 drawMap();
 drawControls();
 drawResults();
 loadTimetables();
 setInterval(drawResults, 30000);
+

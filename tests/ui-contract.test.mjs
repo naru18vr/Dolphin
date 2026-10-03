@@ -29,18 +29,17 @@ test("テスト時刻はURL指定時だけ使い、30秒ごとに表示を更新
 test("初期表示は全行き先を比較し、候補なしでも比較へ戻れる", () => {
   assert.match(app, /let mode = "all"/);
   assert.match(app, /compareAllFromEmpty/);
-  assert.match(html, /全部まとめて早い順（おすすめ）/);
+  assert.match(html, /すべての駅で比較/);
   assert.match(html, /京成バス公式時刻表をもとに/);
 });
 
 
 test("スマホでは行き先選択を最上部に置き、途中降車停留所を経路名に表示する", () => {
   const css = fs.readFileSync(new URL("../styles.css", import.meta.url), "utf8");
-  assert.match(css, /\.columns\{display:contents;order:initial\}/);
-  assert.match(css, /\.controls\{order:1\}/);
-  assert.match(css, /\.origin\{order:2\}/);
-  assert.match(css, /\.results\{order:3\}/);
-  assert.doesNotMatch(css, /\.columns\{display:flex;flex-direction:column;order:2\}/);
+  assert.ok(html.indexOf('class="panel controls"') < html.indexOf('class="panel results"'));
+  assert.match(css, /@media\(max-width:760px\)/);
+  assert.match(css, /\.columns\{grid-template-columns:1fr;gap:16px\}/);
+  assert.doesNotMatch(css, /\.results\{order:1\}/);
 });
 
 
@@ -84,3 +83,4 @@ test("青砥駅東交差点で降車する候補だけに京成青砥駅まで�
   assert.match(app, /青砥駅東交差点から京成青砥駅まで徒歩で案内/);
   assert.match(app, /destination=\$\{enc\("京成青砥駅"\)\}/);
 });
+
