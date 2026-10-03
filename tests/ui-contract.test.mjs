@@ -71,7 +71,7 @@ test("亀有線・新小53側の奥戸三丁目は徒歩地図に座標と6分�
 
 
 test("軽量化: 時刻表はバージョン付きキャッシュを使い、便表示CSSは1ファイルへ統合する", () => {
-  assert.match(app, /timetables\.json\?v=20260729-cache1/);
+  assert.match(app, /timetables\.json\?v=[^\"\s]+/);
   assert.match(app, /cache: "force-cache"/);
   assert.doesNotMatch(html, /href="timetable\.css/);
   assert.doesNotMatch(html, /href="departure\.css/);

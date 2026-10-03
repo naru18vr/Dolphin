@@ -95,3 +95,11 @@ test("五丁目住宅→青砥駅は亀有駅行の共通時刻表を使い、�
   assert.equal(aoto.durationMinutes, 13);
   assert.match(aoto.verificationNote, /PDF本文の系統・行先欄は空欄/);
 });
+
+
+test("亀有線側の徒歩時間は地図案内と同じ6分で候補を検索する", () => {
+  const data = JSON.parse(fs.readFileSync(new URL("../data/timetables.json", import.meta.url), "utf8"));
+  const routes = data.routes.filter(route => route.stopId === "00020300");
+  assert.equal(routes.length, 2);
+  for (const route of routes) assert.equal(route.walkMinutes, 6);
+});

@@ -1455,7 +1455,7 @@
       "dropOffWalkMinutes": 5,
       "line": "新小53",
       "direction": "亀有駅行",
-      "walkMinutes": 5,
+      "walkMinutes": 6,
       "busDurationMinutes": 13,
       "durationMinutes": 18,
       "durationBasis": "目的駅の到着時刻はPDF未掲載のため、青砥駅入口までの路線距離と降車後徒歩約5分を含む概算値。道路状況により変動。",
@@ -1471,7 +1471,7 @@
       "dropOffWalkMinutes": 0,
       "line": "新小53",
       "direction": "亀有駅行",
-      "walkMinutes": 5,
+      "walkMinutes": 6,
       "busDurationMinutes": 24,
       "durationMinutes": 24,
       "durationBasis": "目的駅の到着時刻はPDF未掲載のため、路線距離を基にした概算値。道路状況により変動。",
@@ -1882,3 +1882,4 @@
     }
   }
 }
+
